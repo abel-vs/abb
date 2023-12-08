@@ -3,14 +3,15 @@ import LoadingCircle from "@/components/loading-circle";
 import { Button } from "@/components/ui/button";
 import { uploadAndEmbedFiles } from "@/lib/actions/files";
 import { useAuth } from "@/lib/providers/supabase-auth-provider";
-import { useRouter } from "next/navigation";
+import { sanitizeFileName } from "@/lib/utils";
+import { redirect, useRouter } from "next/navigation";
 import React, { useRef } from "react";
 import toast from "react-hot-toast";
 
 function FileUploadButton() {
   const { user } = useAuth();
   const router = useRouter();
-  if (!user) throw new Error("No user");
+  if (!user) redirect("/login");
 
   const fileInput = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = React.useState(false);
