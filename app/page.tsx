@@ -1,10 +1,4 @@
-import { PromptForm } from "@/components/prompt-form";
-import AuthButton from "../components/AuthButton";
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
 import Image from "next/image";
-import input from "postcss/lib/input";
-import { useChat } from "ai/react/dist";
 import { ExternalPrompt } from "@/components/external-prompt";
 
 export default async function Index() {

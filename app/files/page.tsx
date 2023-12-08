@@ -2,10 +2,21 @@ import { File } from "@/types/file";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import FileUploadButton from "./add-button";
+import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 
 async function getData(): Promise<File[]> {
+  const supabase = createClient(cookies());
+
+  const { data, error } = await supabase.from("files").select();
+
+  if (error) throw error;
+
+  const files = data as File[];
+  console.log(`Fetched ${files.length} files.`);
   // Fetch data from your API here.
   return [
+    ...files,
     {
       id: "728ed52f",
       name: "My First File",
@@ -15,7 +26,7 @@ async function getData(): Promise<File[]> {
   ];
 }
 
-export default async function DemoPage() {
+export default async function FilesPage() {
   const data = await getData();
 
   return (

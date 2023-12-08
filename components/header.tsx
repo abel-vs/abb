@@ -86,7 +86,7 @@ export function Header() {
         {isSupabaseConnected && <AuthButton />}
         <a
           target="_blank"
-          href="https://github.com/abel-vs/file-magic/"
+          href="https://github.com/abel-vs/abb/"
           rel="noopener noreferrer"
           className={cn(buttonVariants({ variant: "outline" }))}
         >
