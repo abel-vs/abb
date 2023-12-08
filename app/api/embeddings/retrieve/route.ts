@@ -1,27 +1,33 @@
-import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
+import { createClient } from "@/supabase/server";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { cookies } from "next/headers";
-import { createClient } from "utils/supabase/server";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
+export const POST = async (req: NextRequest) => {
+  const { query, match_count } = await req.json();
 
-export async function POST(req: NextRequest) {
-  const { query } = await req.json();
+  const supabase = createClient(cookies());
+  console.log("Get snippets by query:", query);
 
-  const client = createClient(cookies());
+  let query_embedding = null;
+  try {
+    const embeddings = new OpenAIEmbeddings();
+    console.log("Embedding query:", query);
+    query_embedding = await embeddings.embedQuery(query);
+  } catch (e) {
+    console.log(e);
+  }
 
-  const vectorStore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
-    client,
-    tableName: "file_snippets",
-    queryName: "match_file_snippets",
+  console.log("Matching snippets...");
+
+  const { data, error } = await supabase.rpc("match_file_snippets", {
+    query_embedding: query_embedding,
+    match_threshold: 0.78,
+    match_count: match_count,
   });
 
-  const resultOne = await vectorStore.similaritySearch(query, 1);
+  if (error) return NextResponse.json(error);
 
-  console.log(resultOne);
-
-  return new Response(JSON.stringify(resultOne), {
-    status: 200,
-  });
-}
+  console.log("Data:", data);
+  return NextResponse.json(data);
+};
