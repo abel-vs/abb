@@ -6,7 +6,7 @@ export const functionCallHandler: FunctionCallHandler = async (
   functionCall
 ) => {
   console.log("Handling Function Call:", functionCall);
-  let data = {};
+  let data = [];
   const name = functionCall.name;
   const args = functionCall.arguments ? JSON.parse(functionCall.arguments) : {};
   switch (name) {
@@ -23,24 +23,25 @@ export const functionCallHandler: FunctionCallHandler = async (
   }
   console.log("Function call handled.");
   console.log("Chat messages: ", chatMessages);
-  const functionResponse: ChatRequest = {
-    messages: [
-      ...chatMessages,
-      {
-        id: nanoid(),
-        name,
-        role: "function" as const,
-        content: JSON.stringify(data),
-      },
-      // {
-      //   id: nanoid(),
-      //   name,
-      //   role: "function" as const,
-      //   content: JSON.stringify(data),
-      // },
-    ],
-  };
-  return functionResponse;
+  // const functionResponse: ChatRequest = {
+  //   messages: [
+  //     ...chatMessages,
+  //     {
+  //       id: nanoid(),
+  //       name,
+  //       role: "function" as const,
+  //       content: JSON.stringify(data),
+  //     },
+  //     // {
+  //     //   id: nanoid(),
+  //     //   name,
+  //     //   role: "function" as const,
+  //     //   content: JSON.stringify(data),
+  //     // },
+  //   ],
+  // };
+  // return functionResponse;
+  return data[0].content;
 };
 
 export const get_snipppets = async (query: string) => {
