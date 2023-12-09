@@ -85,7 +85,9 @@ export const FileSnippetCard = ({
                 : ""}
             </p> */}
       <Button variant="outline" onClick={() => setShowModal(true)}>
-        {file?.name}
+        {file?.name.length > 20
+          ? file?.name.substring(0, 20) + "..."
+          : file?.name}
         <ExternalLinkIcon className="ml-2 h-4 w-4" />
       </Button>
       {/* </CardDescription>

@@ -107,13 +107,14 @@ export const runFunction = async (name: string, args: any): Promise<any> => {
 export const functions: ChatCompletionFunctions[] = [
   {
     name: "retrieve_information",
-    description: "Retrieves information to help answer the query of the user.",
+    description: "Retrieves information to help answer the prompt of the user.",
     parameters: {
       type: "object",
       properties: {
         query: {
           type: "string",
-          description: "Description of what you want to find.",
+          description:
+            "Description of what you want to find. Used to search related files.",
         },
       },
       required: ["query"],
