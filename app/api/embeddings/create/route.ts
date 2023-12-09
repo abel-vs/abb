@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { Cone } from "lucide-react";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuid } from "uuid";
@@ -24,21 +25,17 @@ export async function POST(req: NextRequest) {
   if (error) throw error;
   if (!file) throw new Error("File does not exist");
 
-  // Write the PDF to a temporary file. This is necessary because the PDFLoader
-  const loader = new PDFLoader(file);
+  let fileType = file.type;
 
-  const rawDocs = await loader.load();
-  /* Split text into chunks */
-  //   const textSplitter = new RecursiveCharacterTextSplitter({
-  //     chunkSize: 5000,
-  //     chunkOverlap: 500,
-  //   });
-  const textSplitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
+  const rawDocs = await file.text();
+
+  const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
     chunkSize: 500,
     chunkOverlap: 0,
   });
+  const docs = await splitter.createDocuments([rawDocs]);
 
-  const docs = await textSplitter.splitDocuments(rawDocs);
+  console.log(docs);
   const doc_texts = docs.map((doc) => doc.pageContent);
 
   console.log("doc_texts", doc_texts);
