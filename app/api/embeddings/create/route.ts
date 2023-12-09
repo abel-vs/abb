@@ -28,8 +28,8 @@ export async function POST(req: NextRequest) {
     const rawDocs = await file.text();
 
     const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
-      chunkSize: 500,
-      chunkOverlap: 0,
+      chunkSize: 2000,
+      chunkOverlap: 200,
     });
     const docs = await splitter.createDocuments([rawDocs]);
 
