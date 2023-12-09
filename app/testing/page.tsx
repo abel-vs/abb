@@ -1,3 +1,4 @@
+import { FileCard } from "@/components/file-card";
 import ContactCard from "@/components/ui/contact-card";
 import FigureCard from "@/components/ui/figure-card";
 import FileReferenceCard from "@/components/ui/file-reference-card";
@@ -17,6 +18,11 @@ const TestingPage = () => {
         phoneNumber="+358 2001 1968"
         title="Astronaut"
         src="/dave.png"
+      />
+      <FileCard
+        fileName="Example"
+        filePath="https://arxiv.org/pdf/1708.08021.pdf"
+        fileType="pdf"
       />
     </div>
   );
