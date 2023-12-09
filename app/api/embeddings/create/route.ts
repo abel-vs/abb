@@ -25,41 +25,80 @@ export async function POST(req: NextRequest) {
   if (error) throw error;
   if (!file) throw new Error("File does not exist");
 
-  let fileType = file.type;
+  if (file.type === "text/markdown") {
+    const rawDocs = await file.text();
 
-  const rawDocs = await file.text();
-
-  const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
-    chunkSize: 500,
-    chunkOverlap: 0,
-  });
-  const docs = await splitter.createDocuments([rawDocs]);
-
-  console.log(docs);
-  const doc_texts = docs.map((doc) => doc.pageContent);
-
-  console.log("doc_texts", doc_texts);
-
-  const embeddings = new OpenAIEmbeddings();
-  const doc_embeddings = await embeddings.embedDocuments(doc_texts);
-
-  let file_snippets: any[] = [];
-  try {
-    file_snippets = docs.map((doc, i) => {
-      const id = uuid();
-      return {
-        id: id,
-        file_id: file_id,
-        content: doc.pageContent,
-        embedding: doc_embeddings[i],
-        metadata: { location: doc.metadata.loc },
-      };
+    const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
+      chunkSize: 500,
+      chunkOverlap: 0,
     });
-  } catch (e) {
-    console.log(e);
+    const docs = await splitter.createDocuments([rawDocs]);
+
+    console.log(docs);
+    const doc_texts = docs.map((doc) => doc.pageContent);
+
+    console.log("doc_texts", doc_texts);
+
+    const embeddings = new OpenAIEmbeddings();
+    const doc_embeddings = await embeddings.embedDocuments(doc_texts);
+
+    let file_snippets: any[] = [];
+    try {
+      file_snippets = docs.map((doc, i) => {
+        const id = uuid();
+        return {
+          id: id,
+          file_id: file_id,
+          content: doc.pageContent,
+          embedding: doc_embeddings[i],
+          metadata: { location: doc.metadata.loc },
+        };
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
+    await supabase.from("file_snippets").insert(file_snippets);
+
+    return NextResponse.json({ message: "Success" });
+  } else if (file.type === "application/pdf") {
+    // Write the PDF to a temporary file. This is necessary because the PDFLoader
+    const loader = new PDFLoader(file);
+
+    const rawDocs = await loader.load();
+    /* Split text into chunks */
+    const textSplitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 5000,
+      chunkOverlap: 500,
+    });
+
+    const docs = await textSplitter.splitDocuments(rawDocs);
+    const doc_texts = docs.map((doc) => doc.pageContent);
+
+    console.log("doc_texts", doc_texts);
+
+    const embeddings = new OpenAIEmbeddings();
+    const doc_embeddings = await embeddings.embedDocuments(doc_texts);
+
+    let file_snippets: any[] = [];
+    try {
+      file_snippets = docs.map((doc, i) => {
+        const id = uuid();
+        return {
+          id: id,
+          file_id: file_id,
+          content: doc.pageContent,
+          embedding: doc_embeddings[i],
+          metadata: { location: doc.metadata.loc },
+        };
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
+    await supabase.from("file_snippets").insert(file_snippets);
+
+    return NextResponse.json({ message: "Success" });
   }
-
-  await supabase.from("file_snippets").insert(file_snippets);
-
-  return NextResponse.json({ message: "Success" });
+  return NextResponse.json({ message: "Unsupported file type" });
 }
