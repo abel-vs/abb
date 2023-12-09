@@ -31,9 +31,13 @@ export async function POST(req: NextRequest) {
 
   const rawDocs = await loader.load();
   /* Split text into chunks */
-  const textSplitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 5000,
-    chunkOverlap: 500,
+  //   const textSplitter = new RecursiveCharacterTextSplitter({
+  //     chunkSize: 5000,
+  //     chunkOverlap: 500,
+  //   });
+  const textSplitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
+    chunkSize: 500,
+    chunkOverlap: 0,
   });
 
   const docs = await textSplitter.splitDocuments(rawDocs);
