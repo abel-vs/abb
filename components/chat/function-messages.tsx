@@ -1,52 +1,57 @@
 "use client";
 import { FunctionCallPayload, Message } from "ai";
-import { DrillExercises } from "./drill-exercises";
-import { Suspense, useContext } from "react";
-import { ExerciseData, TopicData } from "@/lib/types/types";
-import { TopicSelector } from "./topic-selector";
-import { TopicsContext } from "@/lib/providers/topics-provider";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { FileSnippetCardFromId } from "../file-snippet-card";
+import { FileSelector } from "../file-selector";
 
-export default function useFunctionCall(
-  function_call: FunctionCallPayload,
-  append: (message: Message) => void,
-  id: string,
-) {
-  const topics: TopicData[] = useContext(TopicsContext);
-
+export default function renderFunctionCall(function_call: FunctionCallPayload) {
+  const name = function_call.name;
+  const args: any = function_call.arguments;
+  console.log("Rendering function call", function_call);
   switch (function_call.name) {
-    case "choose_topic":
-      // Handle function1
+    case "retrieve_information":
+      //don't render the query call
+      if (args.query) {
+        return "Retrieving information...";
+      }
+      const file_snippets = args;
       return (
-        <>
-          {function_call.arguments["sentence"]}
-          <TopicSelector topics={topics} id={id} append={append} />
-        </>
-      );
-    case "drill_exercises":
-      return (
-        <Suspense fallback={<p>Loading exercises...</p>}>
-          <DrillExercises function_call={function_call} />
-        </Suspense>
-      );
-    case "exercise_help":
-      return (
-        <p>
-          {String(
-            function_call.arguments["sentence"] ??
-              "What exercise do you want help with?",
-          )}
-        </p>
-      );
-    case "create_exercises":
-      const exercises: ExerciseData[] = function_call.arguments[
-        "exercises"
-      ] as ExerciseData[];
-      return (
-        <div className="flex flex-col p-4">
-          {exercises.map((exercise, index) => (
-            <p key={index}>{exercise.question}</p>
+        <div className="flex gap-2 items-center justify-start">
+          {file_snippets.map((snippet, index) => (
+            <FileSnippetCardFromId key={index} id={snippet.id} />
           ))}
         </div>
+      );
+    case "list_files":
+      return <FileSelector />;
+    case "show_references":
+      const reference_ids = args.reference_ids || [];
+      console.log("Showing", reference_ids);
+      if (reference_ids.length === 0) {
+        return <p>No references found</p>;
+      }
+      return (
+        <div className="flex gap-2 items-center justify-start">
+          {reference_ids.map((id, index) => (
+            <FileSnippetCardFromId key={index} id={id} />
+          ))}
+        </div>
+        // <Card className="w-full">
+        //   <CardHeader>
+        //     <CardTitle>Show references</CardTitle>
+        //     <CardDescription>
+        //       References used to create the answer.
+        //     </CardDescription>
+        //   </CardHeader>
+
+        //   <CardContent>{function_call.content}</CardContent>
+        // </Card>
       );
     default:
       return <p>Unknown function</p>;
