@@ -6,7 +6,7 @@ export const FileListCard = ({ file }: { file: any }) => {
   return (
     <Card className="w-full">
       <CardContent className="w-full flex flex-row items-center gap-4 p-4">
-        <FileIcon className="h-8 w-8" />
+        <FileIcon className="h-10 w-10" />
         <CardTitle className="text-lg font-semibold truncate">
           {file.name}
         </CardTitle>

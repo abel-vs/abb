@@ -16,7 +16,7 @@ export const FileSelector = () => {
       {(showAll ? files : files.slice(0, 5)).map((item, index) => (
         <FileListCard file={item} />
       ))}
-      <Button className="w-full" onClick={() => setShowAll(!showAll)}>
+      <Button className="w-full mt-2" onClick={() => setShowAll(!showAll)}>
         {showAll ? "Collapse" : "Show All"}
       </Button>
     </div>

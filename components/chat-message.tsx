@@ -17,7 +17,11 @@ import {
 } from "@/components/ui/icons";
 import { ChatMessageActions } from "@/components/chat-message-actions";
 import renderFunctionCall from "./chat/function-messages";
-import { extractFunctionCall } from "@/app/api/extraction";
+import {
+  extractFunctionCall,
+  parseFunctionRoleMessage,
+} from "@/app/api/extraction";
+import { CustomMarkdown } from "./custom-markdown";
 
 export interface ChatMessageProps {
   message: Message;
@@ -25,14 +29,14 @@ export interface ChatMessageProps {
 
 export function ChatMessage({ message, ...props }: ChatMessageProps) {
   if (message.role === "function") {
-    return renderFunctionCall(message); // Don't render function calls
+    const function_call = parseFunctionRoleMessage(message);
+    return renderFunctionCall(function_call); // Don't render function calls
   }
   if (message.role === "assistant" && message.function_call) {
     const function_call = extractFunctionCall(message);
     if (!function_call) {
       return null;
     }
-    console.log("Extracted function call", function_call);
     return renderFunctionCall(function_call);
   }
   if (message.role === "assistant" && message.content === "") {
@@ -61,47 +65,7 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
         )}
       </div>
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
-        <MemoizedReactMarkdown
-          className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
-          remarkPlugins={[remarkGfm, remarkMath]}
-          components={{
-            p({ children }) {
-              return <p className="mb-2 last:mb-0">{children}</p>;
-            },
-            code({ node, inline, className, children, ...props }) {
-              if (children.length) {
-                if (children[0] == "▍") {
-                  return (
-                    <span className="mt-1 cursor-default animate-pulse">▍</span>
-                  );
-                }
-
-                children[0] = (children[0] as string).replace("`▍`", "▍");
-              }
-
-              const match = /language-(\w+)/.exec(className || "");
-
-              if (inline) {
-                return (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                );
-              }
-
-              return (
-                <CodeBlock
-                  key={Math.random()}
-                  language={(match && match[1]) || ""}
-                  value={String(children).replace(/\n$/, "")}
-                  {...props}
-                />
-              );
-            },
-          }}
-        >
-          {message.content}
-        </MemoizedReactMarkdown>
+        <CustomMarkdown content={message.content} {...props} />
         <ChatMessageActions message={message} />
       </div>
     </div>

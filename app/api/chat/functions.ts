@@ -170,19 +170,4 @@ export const functions: ChatCompletionFunctions[] = [
       properties: {},
     },
   },
-  // {
-  //   name: "find_relevant_images",
-  //   description:
-  //     "Finds the relevant pdf snippets for the given query. Used for finding info out of PDFs.",
-  //   parameters: {
-  //     type: "object",
-  //     properties: {
-  //       query: {
-  //         type: "string",
-  //         description: "Description of what you want to find.",
-  //       },
-  //     },
-  //     required: ["query"],
-  //   },
-  // },
 ];

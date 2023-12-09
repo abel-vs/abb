@@ -80,20 +80,18 @@ export function extractFunctionCall(
       name: functionCall.name,
       arguments: JSON.parse(functionCall.arguments),
     };
-  } else if (typeof functionCall === "string") {
-    // If the functionCall is a string, it is still being generated
-    try {
-      const exercises = extractObjects("exercises", functionCall);
-      if (exercises) {
-        return {
-          name: "create_exercises",
-          arguments: { exercises: exercises },
-        };
-      }
-    } catch (error) {
-      // Do nothing
-    }
-  } else {
-    throw new Error("Unkown function call type");
   }
+}
+
+// Method to parse a function message into a better formatted function
+export function parseFunctionRoleMessage(
+  message: Message
+): FunctionCallPayload {
+  if (message.role !== "function") throw Error("Message role !== 'function'.");
+  const args = JSON.parse(message.content);
+  const functionCall = {
+    name: message.name || "",
+    arguments: args,
+  };
+  return functionCall;
 }

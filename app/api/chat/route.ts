@@ -14,7 +14,10 @@ const openai = new OpenAIApi(configuration);
 const model = process.env.OPENAI_MODEL;
 
 const system_prompt =
-  "You are ABB-9000. An AI crewmate for ABB marine engineers.";
+  "You are ABB-9000. An AI crewmate for ABB marine engineers.\
+  \n\nYou are tasked with helping the engineers with their daily tasks.\
+  Use the function calls to retrieve information, base your answer on the documentation. \
+  Include a picture when available and relevant.";
 
 export async function POST(req: NextRequest) {
   const json = await req.json();
