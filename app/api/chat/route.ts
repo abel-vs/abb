@@ -2,7 +2,7 @@ import { OpenAIStream, StreamingTextResponse } from "ai";
 import { Configuration, OpenAIApi } from "openai-edge";
 import { NextRequest } from "next/server";
 import { authorizeUser } from "@/utils/supabase/authorize-user";
-import { functions } from "./functions";
+import { functions, runFunction } from "./functions";
 
 export const runtime = "edge";
 
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     return response;
   }
 
-  const res = await openai.createChatCompletion({
+  const initialResponse = await openai.createChatCompletion({
     model: model as string,
     messages: [
       {
@@ -37,8 +37,29 @@ export async function POST(req: NextRequest) {
     temperature: 0.7,
     stream: true,
     functions,
+    // function_call: "auto",
   });
 
-  const stream = OpenAIStream(res);
+  const stream = OpenAIStream(
+    initialResponse
+    //   \{
+    //   experimental_onFunctionCall: async (
+    //     { name, arguments: args },
+    //     createFunctionCallMessages
+    //   ) => {
+    //     const result = await runFunction(name, args);
+    //     console.log("Function result:", result);
+    //     const newMessages = createFunctionCallMessages(result);
+    //     console.log("New messages:", newMessages);
+    //     return openai.createChatCompletion({
+    //       model: model as string,
+    //       stream: true,
+    //       messages: [...messages, ...newMessages],
+    //       functions,
+    //     });
+    //   },
+    // }
+  );
+
   return new StreamingTextResponse(stream);
 }

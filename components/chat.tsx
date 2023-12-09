@@ -50,20 +50,28 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       },
       experimental_onFunctionCall: functionCallHandler,
       onResponse(response) {
+        console.log("Chat response", response);
         if (response.status === 401) {
           toast.error(response.statusText);
         }
       },
       onFinish() {
+        console.log("Chat finished");
         if (!path.includes("chat")) {
-          router.push(`/chat/${id}`, { shallow: true, scroll: false });
-          router.refresh();
+          console.log("Chat finished, redirecting to /chat");
+          // router.push(`/chat/${id}`, { shallow: true, scroll: false });
+          // router.refresh();
         }
       },
     });
   return (
     <>
-      <div className={cn("pb-[200px] w-full pt-4 md:pt-10", className)}>
+      <div
+        className={cn(
+          "pb-[160px] w-full pt-4 md:pt-10 h-full overflow-y-auto",
+          className
+        )}
+      >
         {messages.length ? (
           <>
             <ChatList messages={messages} />
