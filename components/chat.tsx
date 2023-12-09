@@ -21,6 +21,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
+import { functionCallHandler } from "@/app/api/chat/functions";
 
 const IS_PREVIEW = process.env.VERCEL_ENV === "preview";
 export interface ChatProps extends React.ComponentProps<"div"> {
@@ -47,6 +48,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         id,
         previewToken,
       },
+      experimental_onFunctionCall: functionCallHandler,
       onResponse(response) {
         if (response.status === 401) {
           toast.error(response.statusText);
