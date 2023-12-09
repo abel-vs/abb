@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/icons";
 import { ChatMessageActions } from "@/components/chat-message-actions";
 import renderFunctionCall from "./chat/function-messages";
+import { extractFunctionCall } from "@/app/api/extraction";
 
 export interface ChatMessageProps {
   message: Message;
@@ -25,6 +26,14 @@ export interface ChatMessageProps {
 export function ChatMessage({ message, ...props }: ChatMessageProps) {
   if (message.role === "function") {
     return renderFunctionCall(message); // Don't render function calls
+  }
+  if (message.role === "assistant" && message.function_call) {
+    const function_call = extractFunctionCall(message);
+    if (!function_call) {
+      return null;
+    }
+    console.log("Extracted function call", function_call);
+    return renderFunctionCall(function_call);
   }
   if (message.role === "assistant" && message.content === "") {
     return null;

@@ -2,7 +2,7 @@ import { OpenAIStream, StreamingTextResponse } from "ai";
 import { Configuration, OpenAIApi } from "openai-edge";
 import { NextRequest } from "next/server";
 import { authorizeUser } from "@/utils/supabase/authorize-user";
-import { functions, runFunction } from "./functions";
+import { functions } from "./functions";
 
 export const runtime = "edge";
 

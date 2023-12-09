@@ -24,13 +24,13 @@ export const columns: ColumnDef<File>[] = [
     header: "File Type",
   },
   {
-    accessorKey: "file_path",
-    header: "File Path",
+    accessorKey: "id",
+    header: "ID",
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original;
+      const file = row.original;
 
       return (
         <DropdownMenu>
@@ -43,9 +43,9 @@ export const columns: ColumnDef<File>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(file.id)}
             >
-              Copy payment ID
+              Copy file ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>
