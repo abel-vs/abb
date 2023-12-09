@@ -77,15 +77,6 @@ export const get_references = async (reference_ids: string[]) => {
 
 export const runFunction = async (name: string, args: any): Promise<any> => {
   switch (name) {
-    case "find_relevant_snippets":
-      if (args) {
-        const { query } = args;
-        const snippets = await get_snipppets(query);
-        return snippets;
-      } else {
-        console.error("functionCall.arguments is undefined");
-      }
-      break;
     case "retrieve_information":
       if (args) {
         const { query } = args;
@@ -117,21 +108,6 @@ export const functions: ChatCompletionFunctions[] = [
   {
     name: "retrieve_information",
     description: "Retrieves information to help answer the query of the user.",
-    parameters: {
-      type: "object",
-      properties: {
-        query: {
-          type: "string",
-          description: "Description of what you want to find.",
-        },
-      },
-      required: ["query"],
-    },
-  },
-  {
-    name: "find_relevant_snippets",
-    description:
-      "Finds the relevant pdf snippets for the given query. Used for finding info out of PDFs.",
     parameters: {
       type: "object",
       properties: {

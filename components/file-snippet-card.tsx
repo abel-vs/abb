@@ -72,29 +72,25 @@ export const FileSnippetCard = ({
         showModal={showModal}
         setShowModal={setShowModal}
       />
-      <Card className="w-full">
+      {/* <Card className="w-full">
         <CardHeader>
           <CardTitle className="truncate text-lg">{file?.name}</CardTitle>
+          <CardDescription className="flex items-center justify-between"> */}
+      {/* <p>
+              {location.lines
+                ? `From line ${location.lines.from} to line ${location.lines.to}.`
+                : ""}
+              {location.pages
+                ? `From page ${location.pages.from} to page ${location.pages.to}.`
+                : ""}
+            </p> */}
+      <Button variant="outline" onClick={() => setShowModal(true)}>
+        {file?.name}
+        <ExternalLinkIcon className="ml-2 h-4 w-4" />
+      </Button>
+      {/* </CardDescription>
         </CardHeader>
-        <CardContent className="flex items-center justify-between">
-          <p>
-            {location.lines
-              ? `From line ${location.lines.from} to line ${location.lines.to}.`
-              : ""}
-            {location.pages
-              ? `From page ${location.pages.from} to page ${location.pages.to}.`
-              : ""}
-          </p>
-          <Button
-            className="ml-auto"
-            variant="outline"
-            onClick={() => setShowModal(true)}
-          >
-            Open
-            <ExternalLinkIcon className="ml-2 h-4 w-4" />
-          </Button>
-        </CardContent>
-      </Card>
+      </Card> */}
     </>
   );
 };

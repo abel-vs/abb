@@ -15,19 +15,6 @@ export default function renderFunctionCall(function_call: FunctionCallPayload) {
   const args: any = function_call.arguments;
   console.log("Rendering function call", function_call);
   switch (function_call.name) {
-    case "find_relevant_snippets":
-      // Handle function1
-      return (
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Find relevant snippets</CardTitle>
-            <CardDescription>
-              Retrieves file snippets relevant to the conversation.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>{function_call.content}</CardContent>
-        </Card>
-      );
     case "retrieve_information":
       //don't render the query call
       if (args.query) {
@@ -35,19 +22,11 @@ export default function renderFunctionCall(function_call: FunctionCallPayload) {
       }
       const file_snippets = args;
       return (
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Retrieve Information</CardTitle>
-            <CardDescription>
-              Retrieves information based on the provided arguments.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            {file_snippets.map((snippet, index) => (
-              <FileSnippetCardFromId key={index} id={snippet.id} />
-            ))}
-          </CardContent>
-        </Card>
+        <div className="flex gap-2 items-center justify-start">
+          {file_snippets.map((snippet, index) => (
+            <FileSnippetCardFromId key={index} id={snippet.id} />
+          ))}
+        </div>
       );
     case "list_files":
       return <FileSelector />;
@@ -58,7 +37,7 @@ export default function renderFunctionCall(function_call: FunctionCallPayload) {
         return <p>No references found</p>;
       }
       return (
-        <div className="flex flex-col gap-2 items-center">
+        <div className="flex gap-2 items-center justify-start">
           {reference_ids.map((id, index) => (
             <FileSnippetCardFromId key={index} id={id} />
           ))}
