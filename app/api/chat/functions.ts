@@ -7,41 +7,31 @@ export const functionCallHandler: FunctionCallHandler = async (
 ) => {
   console.log("Handling Function Call:", functionCall);
   let data = [];
-  const name = functionCall.name;
+  const name = functionCall.name || "";
   const args = functionCall.arguments ? JSON.parse(functionCall.arguments) : {};
-  switch (name) {
-    case "find_relevant_snippets":
-      if (args) {
-        const { query } = args;
-        data = await get_snipppets(query);
-      } else {
-        console.error("No arguments provided for function call.");
-      }
-      break;
-    default:
-      console.error(`Unknown function call: ${name}`);
-  }
-  console.log("Function call handled.");
+  data = await runFunction(name, args);
+  console.log("Function call handled: ", data);
   console.log("Chat messages: ", chatMessages);
-  // const functionResponse: ChatRequest = {
-  //   messages: [
-  //     ...chatMessages,
-  //     {
-  //       id: nanoid(),
-  //       name,
-  //       role: "function" as const,
-  //       content: JSON.stringify(data),
-  //     },
-  //     // {
-  //     //   id: nanoid(),
-  //     //   name,
-  //     //   role: "function" as const,
-  //     //   content: JSON.stringify(data),
-  //     // },
-  //   ],
-  // };
-  // return functionResponse;
-  return data[0].content;
+  const functionResponse: ChatRequest = {
+    messages: [
+      ...chatMessages,
+      {
+        id: nanoid(),
+        name,
+        role: "function" as const,
+        content: JSON.stringify(data),
+      },
+      // {
+      //   id: nanoid(),
+      //   name,
+      //   role: "function" as const,
+      //   content: JSON.stringify(data),
+      // },
+    ],
+  };
+  return functionResponse;
+  // console.log("Returning data:", data);
+  // return data[0].content;
 };
 
 export const get_snipppets = async (query: string) => {
@@ -71,6 +61,23 @@ export const runFunction = async (name: string, args: any): Promise<any> => {
         console.error("functionCall.arguments is undefined");
       }
       break;
+    case "retrieve_information":
+      if (args) {
+        const { query } = args;
+        const snippets = await get_snipppets(query);
+        return snippets;
+      } else {
+        console.error("functionCall.arguments is undefined");
+      }
+      break;
+    case "show_references":
+      if (args) {
+        const { reference_ids } = args;
+        return reference_ids;
+      } else {
+        console.error("functionCall.arguments is undefined");
+      }
+      break;
     default:
       console.error(`Unknown function call: ${name}`);
   }
@@ -78,6 +85,20 @@ export const runFunction = async (name: string, args: any): Promise<any> => {
 };
 
 export const functions: ChatCompletionFunctions[] = [
+  {
+    name: "retrieve_information",
+    description: "Retrieves information to help answer the query of the user.",
+    parameters: {
+      type: "object",
+      properties: {
+        query: {
+          type: "string",
+          description: "Description of what you want to find.",
+        },
+      },
+      required: ["query"],
+    },
+  },
   {
     name: "find_relevant_snippets",
     description:
@@ -91,6 +112,24 @@ export const functions: ChatCompletionFunctions[] = [
         },
       },
       required: ["query"],
+    },
+  },
+  {
+    name: "show_references",
+    description: "Shows the references for the given query.",
+    parameters: {
+      type: "object",
+      properties: {
+        reference_ids: {
+          type: "array",
+          items: {
+            type: "string",
+            description:
+              "The ids of the file snippets used to created the previous answer",
+          },
+        },
+      },
+      required: ["references"],
     },
   },
   // {
