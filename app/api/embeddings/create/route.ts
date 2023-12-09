@@ -3,7 +3,6 @@ import { createClient } from "@/utils/supabase/server";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { Cone } from "lucide-react";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuid } from "uuid";
