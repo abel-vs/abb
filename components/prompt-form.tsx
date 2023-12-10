@@ -40,7 +40,9 @@ export function PromptForm({
   }, []);
 
   React.useEffect(() => {
-    onSubmit(recording);
+    if (recording) {
+      onSubmit(recording);
+    }
   }, [recording]);
 
   React.useEffect(() => {
