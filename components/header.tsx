@@ -1,21 +1,8 @@
 import * as React from "react";
-import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import { clearChats } from "@/app/actions";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Sidebar } from "@/components/sidebar";
-import { SidebarList } from "@/components/sidebar-list";
-import {
-  IconGitHub,
-  IconNextChat,
-  IconSeparator,
-  IconVercel,
-} from "@/components/ui/icons";
-import { UserMenu } from "@/components/user-menu";
-import { SidebarMobile } from "./sidebar-mobile";
-import { SidebarToggle } from "./sidebar-toggle";
-import { ChatHistory } from "./chat-history";
+import { buttonVariants } from "@/components/ui/button";
+import { IconGitHub } from "@/components/ui/icons";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import Image from "next/image";
