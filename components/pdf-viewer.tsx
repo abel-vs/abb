@@ -25,7 +25,8 @@ const PdfViewer = ({ filePath, searchText = "" }: PdfViewerProps) => {
 
   const scrollToElement = async (elementId: any) => {
     await new Promise((resolve) => setTimeout(resolve, 5000));
-    const element = document.getElementById(elementId);
+    const elements = document.getElementsByClassName("target-element");
+    const element = elements.length > 1 ? elements[1] : elements[0];
 
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -35,7 +36,7 @@ const PdfViewer = ({ filePath, searchText = "" }: PdfViewerProps) => {
   function highlightPattern(text: any, pattern: any) {
     return text.replace(
       pattern,
-      (value: any) => `<mark id="target-element">${value}</mark>`
+      (value: any) => `<mark class="target-element">${value}</mark>`
     );
   }
   const textRenderer = (textItem: any) => {

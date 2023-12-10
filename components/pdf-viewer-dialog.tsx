@@ -28,7 +28,7 @@ const PdfViewerDialog = ({
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline">
-          {name.length > 20 ? name.substring(0, 20) + "..." : name}
+          {name}
           <ExternalLinkIcon className="ml-2 h-4 w-4" />
         </Button>
       </DialogTrigger>

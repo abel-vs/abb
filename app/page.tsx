@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { ExternalPrompt } from "@/components/external-prompt";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default async function Index() {
   return (
@@ -8,7 +9,17 @@ export default async function Index() {
         <main className="flex-1 flex flex-col gap-6 items-center h-full justify-center">
           <Image src="/hal.gif" alt="Big Image" width="200" height="200" />
           <h2 className="font-bold text-4xl my-8">Welcome to the ABB-9000</h2>
-          <ExternalPrompt />
+          <a
+            target="_blank"
+            href="/chat"
+            rel="noopener noreferrer"
+            className={cn(
+              "w-full  font-bold p-2",
+              buttonVariants({ variant: "default" })
+            )}
+          >
+            Chat
+          </a>
         </main>
       </div>
 

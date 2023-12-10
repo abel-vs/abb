@@ -15,15 +15,7 @@ async function getData(): Promise<File[]> {
   const files = data as File[];
   console.log(`Fetched ${files.length} files.`);
   // Fetch data from your API here.
-  return [
-    ...files,
-    {
-      id: "728ed52f",
-      name: "My First File",
-      type: "text",
-      file_path: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    },
-  ];
+  return [...files];
 }
 
 export default async function FilesPage() {
