@@ -55,10 +55,6 @@ export function PromptForm({
     setIsRecording(!isRecording);
   };
 
-  // const onMouseUp = () => {
-  //   setIsRecording(false);
-  // };
-
   return (
     <form
       onSubmit={async (e) => {
@@ -121,10 +117,8 @@ export function PromptForm({
               <Button
                 size={isRecording ? "default" : "icon"}
                 onMouseDown={onMouseDown}
-                // onMouseUp={onMouseUp}
                 onTouchStart={onMouseDown}
-                // onTouchEnd={onMouseUp}
-                className={`stroke-1  transition-all duration-500 ease-in-out`}
+                className={`stroke-1  transition-all duration-1000 ease-in-out`}
               >
                 {isRecording ? (
                   <div className="flex items-center gap-2">
@@ -132,11 +126,7 @@ export function PromptForm({
                     <p>Recording...</p>
                   </div>
                 ) : (
-                  <Mic
-                    size={25}
-                    className="stroke-1"
-                    // className={`stroke-1 ${isRecording ? "bg-red-500" : ""}`}
-                  />
+                  <Mic size={25} className="stroke-1" />
                 )}
               </Button>
             </TooltipTrigger>
