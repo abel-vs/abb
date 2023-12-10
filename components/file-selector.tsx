@@ -4,7 +4,7 @@ import { FileListCard } from "./file-list-card";
 import { Button } from "./ui/button";
 
 export const FileSelector = () => {
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<any[]>([]);
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {

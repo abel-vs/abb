@@ -40,7 +40,7 @@ export default function renderFunctionCall(function_call: FunctionCallPayload) {
       }
       return (
         <div className="flex flex-wrap gap-2 items-center justify-start">
-          {reference_ids.map((id, index) => (
+          {reference_ids.map((id: string, index: number) => (
             <FileSnippetCardFromId key={index} id={id} />
           ))}
         </div>
