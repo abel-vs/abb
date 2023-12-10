@@ -25,7 +25,7 @@ export const functionCallHandler: FunctionCallHandler = async (
         !(
           message.role === "assistant" &&
           message.function_call &&
-          message.function_call.name === "retrieve_information"
+          (message.function_call as any).name === "retrieve_information"
         )
     );
     console.log("Retrieving info for: ", functionCall);

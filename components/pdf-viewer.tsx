@@ -16,14 +16,14 @@ interface PdfViewerProps {
 }
 
 const PdfViewer = ({ filePath, searchText = "" }: PdfViewerProps) => {
-  const [numPages, setNumPages] = useState(null);
+  const [numPages, setNumPages] = useState(0);
 
-  function onDocumentLoadSuccess({ numPages }) {
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
     scrollToElement("target-element");
   }
 
-  const scrollToElement = async (elementId) => {
+  const scrollToElement = async (elementId: any) => {
     await new Promise((resolve) => setTimeout(resolve, 5000));
     const element = document.getElementById(elementId);
 
@@ -32,13 +32,13 @@ const PdfViewer = ({ filePath, searchText = "" }: PdfViewerProps) => {
     }
   };
 
-  function highlightPattern(text, pattern) {
+  function highlightPattern(text: any, pattern: any) {
     return text.replace(
       pattern,
-      (value) => `<mark id="target-element">${value}</mark>`
+      (value: any) => `<mark id="target-element">${value}</mark>`
     );
   }
-  const textRenderer = (textItem) => {
+  const textRenderer = (textItem: any) => {
     return highlightPattern(textItem.str, searchText);
   };
 
