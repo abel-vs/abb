@@ -12,6 +12,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const model = process.env.OPENAI_MODEL;
+const image_model = "gpt-4-vision-preview";
 
 const system_prompt =
   "You are ABB-9000. An AI crewmate for ABB marine engineers.\
@@ -22,21 +23,35 @@ const system_prompt =
 
 export async function POST(req: NextRequest) {
   const json = await req.json();
-  const { messages } = json;
+  const { messages, data } = json;
+
+  const initialMessages = messages.slice(0, -1);
+  const currentMessage = messages[messages.length - 1];
 
   const { user, response } = await authorizeUser();
   if (!user) {
     return response;
   }
 
+  const hasImage = data && data.imageUrl !== undefined;
+
   const initialResponse = await openai.createChatCompletion({
-    model: model as string,
+    model: hasImage ? image_model : (model as string),
     messages: [
       {
         role: "system",
         content: system_prompt,
       },
-      ...messages,
+      ...initialMessages,
+      {
+        ...currentMessage,
+        content: [
+          { type: "text", text: currentMessage.content },
+          ...(hasImage
+            ? [{ type: "image_url", image_url: data.imageUrl }]
+            : []),
+        ],
+      },
     ],
     temperature: 0.7,
     stream: true,
