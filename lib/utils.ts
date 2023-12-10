@@ -24,5 +24,23 @@ export const extractSearchTextFromContent = (content: string): string => {
 
   marked(content, { renderer });
 
+  // if first heading is empty, pick first line
+  if (firstHeading === "") {
+    firstHeading = content.split(/[^A-Za-z\s]/)[0];
+  }
+
+  if (firstHeading === "") {
+    let firstNumberedLine = content
+      .split("\n")
+      .find((line) => /^\d+\./.test(line));
+
+    firstHeading = firstNumberedLine ? firstNumberedLine : "";
+  }
+
+  firstHeading = firstHeading.replace(/^[^a-zA-Z]+/, "");
+  firstHeading = firstHeading.split(/[^A-Za-z\s]/)[0];
+
+  console.log(firstHeading);
+
   return firstHeading;
 };
