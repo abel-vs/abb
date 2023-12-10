@@ -11,7 +11,9 @@ import {
 } from "@/components/ui/tooltip";
 import { IconArrowElbow, IconPlus } from "@/components/ui/icons";
 import { useRouter } from "next/navigation";
-import { Microphone } from "./microphone";
+import { Mic } from "lucide-react";
+import { useRecordVoice } from "../lib/hooks/useRecordVoice";
+import LoadingCircle from "./loading-circle";
 
 export interface PromptProps
   extends Pick<UseChatHelpers, "input" | "setInput"> {
@@ -27,12 +29,35 @@ export function PromptForm({
 }: PromptProps) {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
+  const { startRecording, stopRecording, text: recording } = useRecordVoice();
   const router = useRouter();
+  const [isRecording, setIsRecording] = React.useState(false);
+
   React.useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, []);
+
+  React.useEffect(() => {
+    onSubmit(recording);
+  }, [recording]);
+
+  React.useEffect(() => {
+    if (isRecording) {
+      startRecording();
+    } else {
+      stopRecording();
+    }
+  }, [isRecording]);
+
+  const onMouseDown = () => {
+    setIsRecording(!isRecording);
+  };
+
+  // const onMouseUp = () => {
+  //   setIsRecording(false);
+  // };
 
   return (
     <form
@@ -77,7 +102,7 @@ export function PromptForm({
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
         />
-        <div className="absolute right-0 top-4 sm:right-4">
+        <div className="absolute right-0 top-4 sm:right-4 flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -91,9 +116,32 @@ export function PromptForm({
             </TooltipTrigger>
             <TooltipContent>Send message</TooltipContent>
           </Tooltip>
-        </div>
-        <div className="absolute right-0 top-4 sm:right-4">
-          <Microphone />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size={isRecording ? "default" : "icon"}
+                onMouseDown={onMouseDown}
+                // onMouseUp={onMouseUp}
+                onTouchStart={onMouseDown}
+                // onTouchEnd={onMouseUp}
+                className={`stroke-1  transition-all duration-500 ease-in-out`}
+              >
+                {isRecording ? (
+                  <div className="flex items-center gap-2">
+                    <LoadingCircle />
+                    <p>Recording...</p>
+                  </div>
+                ) : (
+                  <Mic
+                    size={25}
+                    className="stroke-1"
+                    // className={`stroke-1 ${isRecording ? "bg-red-500" : ""}`}
+                  />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Record input</TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </form>
