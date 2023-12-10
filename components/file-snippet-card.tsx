@@ -14,6 +14,11 @@ import { Badge } from "./ui/badge";
 import ReactMarkdown from "react-markdown";
 import Modal from "./modal";
 import { CustomMarkdown } from "./custom-markdown";
+import { DialogHeader, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
+import PdfViewer from "./pdf-viewer";
+import { extractSearchTextFromContent } from "@/lib/utils";
+import PdfViewerDialog from "./pdf-viewer-dialog";
 
 export const FileSnippetCardFromId = ({ id }: { id: string }) => {
   const [loading, setLoading] = useState(true);
@@ -63,37 +68,34 @@ export const FileSnippetCard = ({
   fileSnippet: any;
   file: any;
 }) => {
-  const location = fileSnippet.metadata.location;
-  const [showModal, setShowModal] = useState(false);
+  const [fileURL, setFileURL] = useState<string | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchPublicUrl() {
+      const { data, error } = await supabase.storage
+        .from("files")
+        .createSignedUrl(file.file_path, 3600);
+      if (error) throw error;
+      setFileURL(data.signedUrl);
+    }
+    fetchPublicUrl();
+  }, [file.file_path]);
+
+  const searchText = extractSearchTextFromContent(fileSnippet.content);
+  console.log("Search text", searchText);
+  console.log("File url", fileURL);
+
+  if (!fileURL) {
+    return null;
+  }
+
   return (
-    <>
-      <FileSnippetModal
-        file_snippet={fileSnippet}
-        showModal={showModal}
-        setShowModal={setShowModal}
-      />
-      {/* <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="truncate text-lg">{file?.name}</CardTitle>
-          <CardDescription className="flex items-center justify-between"> */}
-      {/* <p>
-              {location.lines
-                ? `From line ${location.lines.from} to line ${location.lines.to}.`
-                : ""}
-              {location.pages
-                ? `From page ${location.pages.from} to page ${location.pages.to}.`
-                : ""}
-            </p> */}
-      <Button variant="outline" onClick={() => setShowModal(true)}>
-        {file?.name.length > 20
-          ? file?.name.substring(0, 20) + "..."
-          : file?.name}
-        <ExternalLinkIcon className="ml-2 h-4 w-4" />
-      </Button>
-      {/* </CardDescription>
-        </CardHeader>
-      </Card> */}
-    </>
+    <PdfViewerDialog
+      name={file?.name}
+      filePath={fileURL}
+      searchText={searchText}
+    />
   );
 };
 

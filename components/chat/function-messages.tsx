@@ -1,14 +1,8 @@
 "use client";
 import { FunctionCallPayload, Message } from "ai";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
 import { FileSnippetCardFromId } from "../file-snippet-card";
 import { FileSelector } from "../file-selector";
+import { DialogDemo } from "../dialog-demo";
 
 export default function renderFunctionCall(function_call: FunctionCallPayload) {
   const name = function_call.name;
@@ -37,21 +31,11 @@ export default function renderFunctionCall(function_call: FunctionCallPayload) {
         return <p>No references found</p>;
       }
       return (
-        <div className="flex gap-2 items-center justify-start">
+        <div className="flex flex-wrap gap-2 items-center justify-start">
           {reference_ids.map((id, index) => (
             <FileSnippetCardFromId key={index} id={id} />
           ))}
         </div>
-        // <Card className="w-full">
-        //   <CardHeader>
-        //     <CardTitle>Show references</CardTitle>
-        //     <CardDescription>
-        //       References used to create the answer.
-        //     </CardDescription>
-        //   </CardHeader>
-
-        //   <CardContent>{function_call.content}</CardContent>
-        // </Card>
       );
     default:
       return <p>Unknown function</p>;

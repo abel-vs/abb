@@ -39,6 +39,7 @@
     "geist": "^1.2.0",
     "langchain": "^0.0.203",
     "lucide-react": "^0.294.0",
+    "marked": "^11.0.1",
     "nanoid": "^5.0.4",
     "next": "latest",
     "next-auth": "5.0.0-beta.3",
