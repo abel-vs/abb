@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import { Mic } from "lucide-react";
 import { useRecordVoice } from "../lib/hooks/useRecordVoice";
 import LoadingCircle from "./loading-circle";
+import { ImageUploadButton } from "./image-upload-button";
+import Image from "next/image";
 
 export interface PromptProps
   extends Pick<UseChatHelpers, "input" | "setInput"> {
@@ -32,6 +34,7 @@ export function PromptForm({
   const { startRecording, stopRecording, text: recording } = useRecordVoice();
   const router = useRouter();
   const [isRecording, setIsRecording] = React.useState(false);
+  const [imageURL, setImageURL] = React.useState("");
 
   React.useEffect(() => {
     if (inputRef.current) {
@@ -67,6 +70,9 @@ export function PromptForm({
       }}
       ref={formRef}
     >
+      {imageURL && (
+        <Image src={imageURL} alt="Uploaded" width="600" height="200" />
+      )}
       <div className="relative flex flex-col w-full px-8 overflow-hidden max-h-60 grow bg-background sm:rounded-md sm:border sm:px-12">
         <Tooltip>
           <TooltipTrigger asChild>
@@ -87,6 +93,7 @@ export function PromptForm({
           </TooltipTrigger>
           <TooltipContent>New Chat</TooltipContent>
         </Tooltip>
+        <ImageUploadButton setImageURL={setImageURL} />
         <Textarea
           ref={inputRef}
           tabIndex={0}

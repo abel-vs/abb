@@ -19,8 +19,7 @@ const insertFile = async (id: string, file: File, file_path: string) => {
 };
 
 export const uploadFiles = async (
-  files: File[],
-  user_id: string
+  files: File[]
 ): Promise<{ name: string; id: string }[]> => {
   // Initialize an array to store the ids of the custom files
   let custom_files: { name: string; id: string }[] = [];
@@ -112,7 +111,7 @@ export const embedFiles = async (files: { name: string; id: string }[]) => {
 
 export const uploadAndEmbedFiles = async (files: File[], user_id: string) => {
   if (files.length > 0) {
-    const uploaded_files = await uploadFiles(files, user_id);
+    const uploaded_files = await uploadFiles(files);
     toast.success("Files uploaded");
     await embedFiles(uploaded_files);
     toast.success("Files embedded");

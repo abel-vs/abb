@@ -13,6 +13,9 @@ const nextConfig = {
 
     return config;
   },
+  images: {
+    domains: ["wcxwjtlzauithfsmypva.supabase.co"],
+  },
 };
 
 module.exports = nextConfig;
