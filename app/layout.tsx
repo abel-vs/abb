@@ -15,7 +15,7 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "HAL 8000",
+  title: "ABB 9000",
   description: "AI Crew Mate",
 };
 
