@@ -33,7 +33,12 @@ export async function POST(req: NextRequest) {
     return response;
   }
 
-  const hasImage = data && data.imageUrl !== undefined;
+  console.log("MESSAGES:", messages);
+
+  const hasImage = data && data.imageUrl !== undefined && data.imageUrl !== "";
+
+  console.log("Has image:", hasImage);
+  console.log("URL:", data?.imageUrl);
 
   const initialResponse = await openai.createChatCompletion({
     model: hasImage ? image_model : (model as string),
@@ -45,18 +50,19 @@ export async function POST(req: NextRequest) {
       ...initialMessages,
       {
         ...currentMessage,
-        content: [
-          { type: "text", text: currentMessage.content },
-          ...(hasImage
-            ? [{ type: "image_url", image_url: data.imageUrl }]
-            : []),
-        ],
+        content: hasImage
+          ? [
+              { type: "text", text: currentMessage.content },
+              ...(hasImage
+                ? [{ type: "image_url", image_url: data?.imageUrl }]
+                : []),
+            ]
+          : currentMessage.content,
       },
     ],
     temperature: 0.7,
     stream: true,
-    functions,
-    // function_call: "auto",
+    ...(hasImage ? {} : { functions }),
   });
 
   const stream = OpenAIStream(

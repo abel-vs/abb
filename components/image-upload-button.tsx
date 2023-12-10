@@ -3,10 +3,9 @@ import { createClient } from "@/supabase/client";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import LoadingCircle from "./loading-circle";
-import { Mic, UploadIcon } from "lucide-react";
-import { TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
+import { CameraIcon, UploadIcon } from "lucide-react";
 import { Button } from "./ui/button";
-import { Tooltip } from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export const ImageUploadButton = ({
   setImageURL,
@@ -26,12 +25,17 @@ export const ImageUploadButton = ({
       }
       const file = files[0];
       const sanitized_name = sanitizeFileName(file.name);
-      const { data: storageData, error } = await supabase.storage
-        .from("images")
-        .upload(`${sanitized_name}`, file); // Get url for the file.
+      try {
+        const { data: storageData, error } = await supabase.storage
+          .from("images")
+          .upload(`${sanitized_name}`, file); // Get url for the file.
+      } catch (e: any) {
+        console.error(e);
+      }
+
       const { data: urlData, error: urlError } = await supabase.storage
         .from("images")
-        .createSignedUrl(`${sanitized_name}`, 60);
+        .createSignedUrl(`${sanitized_name}`, 300);
       if (urlError) throw urlError;
       setImageURL(urlData.signedUrl);
 
@@ -71,7 +75,7 @@ export const ImageUploadButton = ({
                 <p>Uploading...</p>
               </div>
             ) : (
-              <UploadIcon />
+              <CameraIcon />
             )}
           </Button>
         </TooltipTrigger>

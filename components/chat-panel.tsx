@@ -18,6 +18,8 @@ export interface ChatPanelProps
     | "stop"
     | "input"
     | "setInput"
+    | "handleSubmit"
+    | "handleInputChange"
   > {
   id?: string;
   title?: string;
@@ -33,6 +35,8 @@ export function ChatPanel({
   input,
   setInput,
   messages,
+  handleSubmit,
+  handleInputChange,
 }: ChatPanelProps) {
   return (
     <div className="fixed bottom-0 w-full bg-gradient-to-b from-muted/30 from-0% to-muted/30 to-50% animate-in duration-300 ease-in-out dark:from-background/10 dark:from-10% dark:to-background/80 peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]">
@@ -68,6 +72,8 @@ export function ChatPanel({
                 role: "user",
               });
             }}
+            handleSubmit={handleSubmit}
+            handleInputChange={handleInputChange}
             input={input}
             setInput={setInput}
             isLoading={isLoading}

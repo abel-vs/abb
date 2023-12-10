@@ -40,30 +40,39 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   const [previewTokenInput, setPreviewTokenInput] = useState(
     previewToken ?? ""
   );
-  const { messages, append, reload, stop, isLoading, input, setInput } =
-    useChat({
-      initialMessages,
+  const {
+    messages,
+    append,
+    reload,
+    stop,
+    isLoading,
+    input,
+    setInput,
+    handleSubmit,
+    handleInputChange,
+  } = useChat({
+    initialMessages,
+    id,
+    body: {
       id,
-      body: {
-        id,
-        previewToken,
-      },
-      experimental_onFunctionCall: functionCallHandler,
-      onResponse(response) {
-        console.log("Chat response", response);
-        if (response.status === 401) {
-          toast.error(response.statusText);
-        }
-      },
-      onFinish() {
-        console.log("Chat finished");
-        if (!path.includes("chat")) {
-          console.log("Chat finished, redirecting to /chat");
-          // router.push(`/chat/${id}`, { shallow: true, scroll: false });
-          // router.refresh();
-        }
-      },
-    });
+      previewToken,
+    },
+    experimental_onFunctionCall: functionCallHandler,
+    onResponse(response) {
+      console.log("Chat response", response);
+      if (response.status === 401) {
+        toast.error(response.statusText);
+      }
+    },
+    onFinish() {
+      console.log("Chat finished");
+      if (!path.includes("chat")) {
+        console.log("Chat finished, redirecting to /chat");
+        // router.push(`/chat/${id}`, { shallow: true, scroll: false });
+        // router.refresh();
+      }
+    },
+  });
   return (
     <>
       <div
@@ -90,6 +99,8 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         messages={messages}
         input={input}
         setInput={setInput}
+        handleSubmit={handleSubmit}
+        handleInputChange={handleInputChange}
       />
 
       <Dialog open={previewTokenDialog} onOpenChange={setPreviewTokenDialog}>

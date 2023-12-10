@@ -18,7 +18,10 @@ import { ImageUploadButton } from "./image-upload-button";
 import Image from "next/image";
 
 export interface PromptProps
-  extends Pick<UseChatHelpers, "input" | "setInput"> {
+  extends Pick<
+    UseChatHelpers,
+    "input" | "setInput" | "handleSubmit" | "handleInputChange"
+  > {
   onSubmit: (value: string) => void;
   isLoading: boolean;
 }
@@ -28,6 +31,8 @@ export function PromptForm({
   input,
   setInput,
   isLoading,
+  handleSubmit,
+  handleInputChange,
 }: PromptProps) {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
@@ -60,13 +65,19 @@ export function PromptForm({
 
   return (
     <form
-      onSubmit={async (e) => {
+      onSubmit={(e) => {
         e.preventDefault();
         if (!input?.trim()) {
           return;
         }
+        console.log("Submit: ", e);
+        handleSubmit(e, {
+          data: {
+            imageUrl: imageURL,
+          },
+        });
         setInput("");
-        await onSubmit(input);
+        setImageURL("");
       }}
       ref={formRef}
     >
@@ -93,14 +104,13 @@ export function PromptForm({
           </TooltipTrigger>
           <TooltipContent>New Chat</TooltipContent>
         </Tooltip>
-        <ImageUploadButton setImageURL={setImageURL} />
         <Textarea
           ref={inputRef}
           tabIndex={0}
           onKeyDown={onKeyDown}
           rows={1}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           placeholder="Send a message."
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
@@ -139,6 +149,7 @@ export function PromptForm({
             </TooltipTrigger>
             <TooltipContent>Record input</TooltipContent>
           </Tooltip>
+          <ImageUploadButton setImageURL={setImageURL} />
         </div>
       </div>
     </form>
