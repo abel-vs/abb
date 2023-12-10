@@ -19,6 +19,17 @@ export const functionCallHandler: FunctionCallHandler = async (
   }
   console.log("Function call handled: ", data);
   console.log("Chat messages: ", chatMessages);
+  if (functionCall.name === "retrieve_information") {
+    chatMessages = chatMessages.filter(
+      (message) =>
+        !(
+          message.role === "assistant" &&
+          message.function_call &&
+          message.function_call.name === "retrieve_information"
+        )
+    );
+    console.log("Retrieving info for: ", functionCall);
+  }
   const functionResponse: ChatRequest = {
     messages: [
       ...chatMessages,

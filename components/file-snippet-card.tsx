@@ -83,8 +83,6 @@ export const FileSnippetCard = ({
   }, [file.file_path]);
 
   const searchText = extractSearchTextFromContent(fileSnippet.content);
-  console.log("Search text", searchText);
-  console.log("File url", fileURL);
 
   if (!fileURL) {
     return null;
