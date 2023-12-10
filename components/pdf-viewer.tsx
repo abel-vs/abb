@@ -24,7 +24,7 @@ const PdfViewer = ({ filePath, searchText = "" }: PdfViewerProps) => {
   }
 
   const scrollToElement = async (elementId) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     const element = document.getElementById(elementId);
 
     if (element) {

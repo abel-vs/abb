@@ -41,7 +41,7 @@ export default async function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <main className="min-h-screen flex flex-col items-center">
+              <main className="h-screen flex flex-col items-center">
                 <Header />
                 {children}
               </main>

@@ -1,50 +1,47 @@
 "use client";
 import { FunctionCallPayload, Message } from "ai";
-import { DrillExercises } from "./drill-exercises";
-import { Suspense, useContext } from "react";
-import { ExerciseData, TopicData } from "@/lib/types/types";
-import { TopicSelector } from "./topic-selector";
-import { TopicsContext } from "@/lib/providers/topics-provider";
+import { FileSnippetCardFromId } from "../file-snippet-card";
+import { FileSelector } from "../file-selector";
+import { DialogDemo } from "../dialog-demo";
+import LoadingCircle from "../loading-circle";
 
-export default function useFunctionCall(
-  function_call: FunctionCallPayload,
-  append: (message: Message) => void,
-  id: string,
-) {
-  const topics: TopicData[] = useContext(TopicsContext);
-
+export default function renderFunctionCall(function_call: FunctionCallPayload) {
+  const name = function_call.name;
+  const args: any = function_call.arguments;
   switch (function_call.name) {
-    case "choose_topic":
-      // Handle function1
+    case "retrieve_information":
+      //don't render the query call
+      if (args.query) {
+        return (
+          <div className="flex items-center gap-2">
+            <LoadingCircle />
+            <p>Retrieving information...</p>
+          </div>
+        );
+      }
+      const file_snippets = args;
+      if (file_snippets.length === 0) {
+        return <p>No relevant info found</p>;
+      }
       return (
-        <>
-          {function_call.arguments["sentence"]}
-          <TopicSelector topics={topics} id={id} append={append} />
-        </>
+        <div className="flex flex-wrap gap-2 items-center justify-start">
+          {file_snippets.map((snippet: any, index: any) => (
+            <FileSnippetCardFromId key={index} id={snippet.id} />
+          ))}
+        </div>
       );
-    case "drill_exercises":
+    case "list_files":
+      return <FileSelector />;
+    case "show_references":
+      const reference_ids = args.reference_ids || [];
+      console.log("Showing", reference_ids);
+      if (reference_ids.length === 0) {
+        return <p>No references found</p>;
+      }
       return (
-        <Suspense fallback={<p>Loading exercises...</p>}>
-          <DrillExercises function_call={function_call} />
-        </Suspense>
-      );
-    case "exercise_help":
-      return (
-        <p>
-          {String(
-            function_call.arguments["sentence"] ??
-              "What exercise do you want help with?",
-          )}
-        </p>
-      );
-    case "create_exercises":
-      const exercises: ExerciseData[] = function_call.arguments[
-        "exercises"
-      ] as ExerciseData[];
-      return (
-        <div className="flex flex-col p-4">
-          {exercises.map((exercise, index) => (
-            <p key={index}>{exercise.question}</p>
+        <div className="flex flex-wrap gap-2 items-center justify-start">
+          {reference_ids.map((id, index) => (
+            <FileSnippetCardFromId key={index} id={id} />
           ))}
         </div>
       );

@@ -1,9 +1,4 @@
-import { FileCard } from "@/components/file-card";
 import PdfViewerDialog from "@/components/pdf-viewer-dialog";
-import ContactCard from "@/components/ui/contact-card";
-import FigureCard from "@/components/ui/figure-card";
-import FileReferenceCard from "@/components/ui/file-reference-card";
-import FileSuggestionCard from "@/components/ui/file-suggestion-card";
 import React from "react";
 
 const TestingPage = () => {
@@ -26,7 +21,11 @@ const TestingPage = () => {
         fileType="pdf"
       /> */}
 
-      <PdfViewerDialog filePath="sample.pdf" searchText="sales" />
+      <PdfViewerDialog
+        name="Open PDF"
+        filePath="sample.pdf"
+        searchText="sales"
+      />
     </>
   );
 };
