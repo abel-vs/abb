@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   console.log("Has image:", hasImage);
   console.log("URL:", data?.imageUrl);
 
-  const initialResponse = await openai.createChatCompletion({
+  const res = await openai.createChatCompletion({
     model: hasImage ? image_model : (model as string),
     messages: [
       {
@@ -65,26 +65,7 @@ export async function POST(req: NextRequest) {
     ...(hasImage ? {} : { functions }),
   });
 
-  const stream = OpenAIStream(
-    initialResponse
-    //   \{
-    //   experimental_onFunctionCall: async (
-    //     { name, arguments: args },
-    //     createFunctionCallMessages
-    //   ) => {
-    //     const result = await runFunction(name, args);
-    //     console.log("Function result:", result);
-    //     const newMessages = createFunctionCallMessages(result);
-    //     console.log("New messages:", newMessages);
-    //     return openai.createChatCompletion({
-    //       model: model as string,
-    //       stream: true,
-    //       messages: [...messages, ...newMessages],
-    //       functions,
-    //     });
-    //   },
-    // }
-  );
+  const stream = OpenAIStream(res);
 
   return new StreamingTextResponse(stream);
 }
